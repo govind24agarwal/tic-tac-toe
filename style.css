@@ -22,5 +22,7 @@ body {
 }
 .box {
   margin: 0.5rem;
+  color: white;
+  font-size: xx-large;
   background-color: brown;
 }

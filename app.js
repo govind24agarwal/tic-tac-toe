@@ -43,13 +43,30 @@ const gameBoard = (function () {
     const arr = gameArray;
     return arr;
   }
-  return { playerWon };
+  function setMove(boxNo, sign) {
+    gameArray[boxNo] = sign;
+  }
+  return { playerWon, getGameArray };
 })();
+
 const player = function (name, sign) {
   name;
   sign;
   return { name, sign };
 };
+
+const gamePlay = (function (gameBoard) {
+  gameArray = gameBoard.getGameArray();
+  console.log(gameArray);
+  function displayGame(boxes) {
+    boxes.forEach((box) => {
+      box.textContent = gameArray[box.dataset.box];
+    });
+  }
+  return { displayGame };
+})(gameBoard);
+
 let player1 = player("Govind", "X");
 let player2 = player("Computer", "O");
-console.log(gameBoard.playerWon(player1));
+const boxes = document.querySelectorAll(".box");
+gamePlay.displayGame(boxes);
