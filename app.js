@@ -1,5 +1,25 @@
 const gameBoard = (function () {
   const gameArray = ["", "", "", "", "", "", "", "", ""];
+
+  function getGameArray() {
+    const arr = gameArray;
+    return arr;
+  }
+  function setMove(boxNo, sign) {
+    gameArray[boxNo] = sign;
+  }
+  return { getGameArray, setMove };
+})();
+
+const player = function (name, sign) {
+  name;
+  sign;
+  return { name, sign };
+};
+
+const gamePlay = (function (gameBoard) {
+  let gameArray = gameBoard.getGameArray();
+  //Checking if player Won
   function checkHorizontal(player) {
     let score = 0;
     for (let i = 0; i < 9; i += 3) {
@@ -39,24 +59,7 @@ const gameBoard = (function () {
     if (checkDiagonal(player)) return true;
     return false;
   }
-  function getGameArray() {
-    const arr = gameArray;
-    return arr;
-  }
-  function setMove(boxNo, sign) {
-    gameArray[boxNo] = sign;
-  }
-  return { playerWon, getGameArray, setMove };
-})();
-
-const player = function (name, sign) {
-  name;
-  sign;
-  return { name, sign };
-};
-
-const gamePlay = (function (gameBoard) {
-  let gameArray = gameBoard.getGameArray();
+  //Functions related to changing gameArray and displaying it
   function updateBoard() {
     gameArray = gameBoard.getGameArray();
   }
@@ -68,8 +71,8 @@ const gamePlay = (function (gameBoard) {
   function setMove(boxNo, sign) {
     gameBoard.setMove(boxNo, sign);
     updateBoard();
-    console.log(gameArray);
   }
+  //Functions related to actual game play
   function changePlayer(currPlayer, player1, player2) {
     if (currPlayer == player1) currPlayer = player2;
     else currPlayer = player1;
@@ -81,7 +84,7 @@ const gamePlay = (function (gameBoard) {
     boxes.forEach((box) => {
       box.addEventListener("click", (e) => {
         setMove(Number(box.dataset.box), currPlayer.sign);
-        console.log(gameBoard.playerWon(currPlayer));
+        if (playerWon(currPlayer)) console.log(currPlayer.name + " won");
         currPlayer = changePlayer(currPlayer, player1, player2);
         displayGame(boxes);
       });
