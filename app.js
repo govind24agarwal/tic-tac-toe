@@ -80,25 +80,36 @@ const gamePlay = (function () {
     updateBoard();
   }
   //Functions related to actual game play
+
   function changePlayer(currPlayer, player1, player2) {
     if (currPlayer == player1) currPlayer = player2;
     else currPlayer = player1;
     return currPlayer;
   }
   function play(boxes, player1, player2) {
+    form.classList.add("submitted");
     let currPlayer = player1;
     displayGame(boxes);
     boxes.forEach((box) => {
       box.addEventListener("click", (e) => {
         setMove(Number(box.dataset.box), currPlayer.sign);
-        if (playerWon(currPlayer)) console.log(currPlayer.name + " won");
-        if (tie()) console.log("Game Tied");
+        if (playerWon(currPlayer)) {
+          displayMsg.textContent = currPlayer.name + " Won";
+          form.classList.remove("submitted");
+          return;
+        }
+        if (tie()) {
+          displayMsg.textContent = "TIE";
+          form.classList.remove("submitted");
+          return;
+        }
         currPlayer = changePlayer(currPlayer, player1, player2);
         displayGame(boxes);
       });
     });
   }
   function newGame(boxes, player1, player2) {
+    form.classList.remove("submitted");
     gameBoard.resetArray();
     updateBoard();
     play(boxes, player1, player2);
@@ -106,11 +117,22 @@ const gamePlay = (function () {
   return { play, newGame };
 })();
 
-let player1 = player("Govind", "X");
-let player2 = player("Computer", "O");
+const submitBtn = document.querySelector("input[value='submit']");
+const form = document.querySelector(".screen");
 const boxes = document.querySelectorAll(".box");
-gamePlay.play(boxes, player1, player2);
+const displayMsg = document.querySelector(".screen h2");
+let player1 = player("User1", "X");
+let player2 = player("User2", "O");
+submitBtn.addEventListener("click", (e) => {
+  form.classList.add("submitted");
+  let player1Name = document.querySelector("input[name='player1-name']");
+  let player2Name = document.querySelector("input[name='player2-name']");
+  player1 = player(player1Name.value, "X");
+  player2 = player(player2Name.value, "O");
+  gamePlay.newGame(boxes, player1, player2);
+});
 const restBtn = document.querySelector(".reset-bttn");
 restBtn.addEventListener("click", (e) => {
-  gamePlay.newGame(boxes, player1, player2);
+  displayMsg.textContent = "";
+  form.classList.remove("submitted");
 });
