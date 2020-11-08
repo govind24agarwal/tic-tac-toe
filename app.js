@@ -93,6 +93,7 @@ const gamePlay = (function () {
     boxes.forEach((box) => {
       box.addEventListener("click", (e) => {
         setMove(Number(box.dataset.box), currPlayer.sign);
+        displayGame(boxes);
         if (playerWon(currPlayer)) {
           displayMsg.textContent = currPlayer.name + " Won";
           form.classList.remove("submitted");
@@ -104,7 +105,6 @@ const gamePlay = (function () {
           return;
         }
         currPlayer = changePlayer(currPlayer, player1, player2);
-        displayGame(boxes);
       });
     });
   }
