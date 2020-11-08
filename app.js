@@ -1,5 +1,5 @@
 const gameBoard = (function () {
-  const gameArray = ["", "", "", "", "", "", "", "", ""];
+  let gameArray = ["", "", "", "", "", "", "", "", ""];
 
   function getGameArray() {
     const arr = gameArray;
@@ -8,7 +8,10 @@ const gameBoard = (function () {
   function setMove(boxNo, sign) {
     gameArray[boxNo] = sign;
   }
-  return { getGameArray, setMove };
+  function resetArray() {
+    gameArray = ["", "", "", "", "", "", "", "", ""];
+  }
+  return { getGameArray, setMove, resetArray };
 })();
 
 const player = function (name, sign) {
@@ -17,7 +20,7 @@ const player = function (name, sign) {
   return { name, sign };
 };
 
-const gamePlay = (function (gameBoard) {
+const gamePlay = (function () {
   let gameArray = gameBoard.getGameArray();
   //Checking if player Won
   function checkHorizontal(player) {
@@ -59,6 +62,10 @@ const gamePlay = (function (gameBoard) {
     if (checkDiagonal(player)) return true;
     return false;
   }
+  function tie() {
+    if (gameArray.includes("")) return false;
+    else return true;
+  }
   //Functions related to changing gameArray and displaying it
   function updateBoard() {
     gameArray = gameBoard.getGameArray();
@@ -85,15 +92,25 @@ const gamePlay = (function (gameBoard) {
       box.addEventListener("click", (e) => {
         setMove(Number(box.dataset.box), currPlayer.sign);
         if (playerWon(currPlayer)) console.log(currPlayer.name + " won");
+        if (tie()) console.log("Game Tied");
         currPlayer = changePlayer(currPlayer, player1, player2);
         displayGame(boxes);
       });
     });
   }
-  return { play };
-})(gameBoard);
+  function newGame(boxes, player1, player2) {
+    gameBoard.resetArray();
+    updateBoard();
+    play(boxes, player1, player2);
+  }
+  return { play, newGame };
+})();
 
 let player1 = player("Govind", "X");
 let player2 = player("Computer", "O");
 const boxes = document.querySelectorAll(".box");
 gamePlay.play(boxes, player1, player2);
+const restBtn = document.querySelector(".reset-bttn");
+restBtn.addEventListener("click", (e) => {
+  gamePlay.newGame(boxes, player1, player2);
+});
